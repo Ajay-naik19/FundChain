@@ -1,0 +1,49 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_34-033705980d4b25909a8f49775e29968569fccead",
+  "solcVersion": "0.8.34",
+  "solcLongVersion": "0.8.34+commit.80d5c536",
+  "compilerType": "solc",
+  "toolVersions": {
+    "hardhat": "3.15.0"
+  },
+  "userSourceNameMap": {
+    "contracts/Counter.sol": "project/contracts/Counter.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "osaka",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/Counter.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.34;\n\ncontract FundChain {\n\n    struct Campaign {\n        address payable owner;\n        string title;\n        string description;\n        uint256 target;\n        uint256 deadline;\n        uint256 amountCollected;\n    }\n\n    Campaign[] public campaigns;\n\n    mapping(uint256 => address[]) public donors;\n\n    function createCampaign(\n        string memory _title,\n        string memory _description,\n        uint256 _target,\n        uint256 _deadline\n    ) public {\n        require(_deadline > block.timestamp, \"Deadline must be in the future\");\n        require(_target > 0, \"Target must be greater than zero\");\n\n        campaigns.push(\n            Campaign(\n                payable(msg.sender),\n                _title,\n                _description,\n                _target,\n                _deadline,\n                0\n            )\n        );\n    }\n\n    function donateToCampaign(uint256 _campaignId) public payable {\n        Campaign storage campaign = campaigns[_campaignId];\n\n        require(block.timestamp < campaign.deadline, \"Campaign ended\");\n        require(msg.value > 0, \"Donation must be greater than zero\");\n\n        campaign.amountCollected += msg.value;\n        donors[_campaignId].push(msg.sender);\n    }\n\n    function getCampaigns() public view returns (Campaign[] memory) {\n        return campaigns;\n    }\n\n    function withdraw(uint256 _campaignId) public {\n        Campaign storage campaign = campaigns[_campaignId];\n\n        require(msg.sender == campaign.owner, \"Only owner can withdraw\");\n        require(\n            block.timestamp >= campaign.deadline,\n            \"Campaign is still active\"\n        );\n\n        uint256 amount = campaign.amountCollected;\n        require(amount > 0, \"No funds to withdraw\");\n\n        campaign.amountCollected = 0;\n\n        campaign.owner.transfer(amount);\n    }\n    function getDonors(uint256 _campaignId)\n    public\n    view\n    returns (address[] memory)\n{\n    return donors[_campaignId];\n}\n}"
+      }
+    }
+  }
+}
