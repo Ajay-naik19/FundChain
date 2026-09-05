@@ -166,9 +166,11 @@ function CreateCampaign() {
        * Convert deadline to Unix timestamp
        */
       const deadlineTimestamp =
-        Math.floor(
-          new Date(deadline).getTime() / 1000
-        )
+  Math.floor(
+    new Date(
+      `${deadline}T23:59:59`
+    ).getTime() / 1000
+  )
 
       /*
        * STEP 6
