@@ -298,7 +298,7 @@ function CreateCampaign() {
               )
             }
             min="0"
-            step="0.01"
+            step="0.001"
             required
           />
 
