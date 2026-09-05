@@ -86,7 +86,8 @@ export default async function handler(
             "Content-Type":
               contentType
           },
-          body
+          body:
+            body as unknown as BodyInit
         }
       )
 
